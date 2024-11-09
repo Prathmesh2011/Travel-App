@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "799159803563",
+    "firebase_url": "https://travel-app-f2abb-default-rtdb.firebaseio.com",
+    "project_id": "travel-app-f2abb",
+    "storage_bucket": "travel-app-f2abb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799159803563:android:2c81a93e245dfdbf0661ee",
+        "android_client_info": {
+          "package_name": "com.example.travel_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD5UJycoimY_0lxskARytKvZmj8LPY0hc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
