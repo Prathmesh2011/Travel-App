@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Travel-App</string>
+    <string name="introTitle">Explore the <font color='#3f95ec'>\n World </font> with us</string>
+    <string name="subIntro">about the app</string>
 </resources>
