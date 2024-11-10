@@ -11,8 +11,11 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.travel_app.Adapter.CategoryAdapter;
+import com.example.travel_app.Adapter.PopularAdapter;
+import com.example.travel_app.Adapter.RecommendedAdapter;
 import com.example.travel_app.Adapter.SliderAdapter;
 import com.example.travel_app.Domain.Category;
+import com.example.travel_app.Domain.ItemDomain;
 import com.example.travel_app.Domain.Location;
 import com.example.travel_app.Domain.SliderItems;
 import com.example.travel_app.R;
@@ -38,6 +41,69 @@ public class MainActivity extends BaseActivity {
         initLocation();
         initBanner();
         initCategory();
+        initRecommended();
+        initPopular();
+    }
+
+    private void initPopular() {
+        DatabaseReference myRef = database.getReference("Popular");
+        binding.progressBarPopular.setVisibility(View.VISIBLE);
+
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        list.add(issue.getValue(ItemDomain.class));
+                    }
+
+                    if (!list.isEmpty()) {
+                        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new PopularAdapter(list);
+                        binding.recyclerViewPopular.setAdapter(adapter);
+                    }
+
+                    binding.progressBarPopular.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+    private void initRecommended() {
+        DatabaseReference myRef = database.getReference("Item");
+        binding.progressBarRecommended.setVisibility(View.VISIBLE);
+
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        list.add(issue.getValue(ItemDomain.class));
+                    }
+
+                    if (!list.isEmpty()) {
+                        binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new RecommendedAdapter(list);
+                        binding.recyclerViewRecommended.setAdapter(adapter);
+                    }
+
+                    binding.progressBarRecommended.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
     }
 
     private void initCategory() {
