@@ -11,7 +11,14 @@ public class ItemDomain implements Serializable {
     private String timeTour;
     private String dateTour;
     private String tourGuideName;
+    private String tourGuidePhone;
+    private String tourGuidePic;
+    private int price;
+    private int bed;
+    private String distance;
+    private double score;
 
+    // Getters and setters for all fields
     public String getTitle() {
         return title;
     }
@@ -124,14 +131,7 @@ public class ItemDomain implements Serializable {
         this.score = score;
     }
 
-    private String tourGuidePhone;
-    private String tourGuidePic;
-    private int price;
-    private int bed;
-    private String distance;
-    private double score;
-
+    // Constructor, etc.
     public ItemDomain() {
-
     }
 }

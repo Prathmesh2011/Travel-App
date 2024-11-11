@@ -1,6 +1,8 @@
 package com.example.travel_app.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.travel_app.Activity.DetailActivity;
 import com.example.travel_app.Domain.ItemDomain;
 import com.example.travel_app.databinding.ViewholderRecommendedBinding;
 
@@ -32,7 +35,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecommendedAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecommendedAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         binding.titleTxt.setText(items.get(position).getTitle());
         binding.priceTxt.setText("$" + items.get(position).getPrice());
         binding.addressTxt.setText(items.get(position).getAddress());
@@ -45,7 +48,10 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle item click here
+                // Ensure key consistency here: Use "object"
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("object", items.get(position));  // "object" key is used here
+                context.startActivity(intent);
             }
         });
     }
@@ -55,12 +61,9 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         return items.size();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         public ViewHolder(ViewholderRecommendedBinding binding) {
             super(binding.getRoot());
         }
     }
 }
-
