@@ -3,6 +3,7 @@ package com.example.travel_app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,13 +24,18 @@ import com.example.travel_app.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
-    ActivityMainBinding binding; // 2 usages
+    ActivityMainBinding binding;
+    private FirebaseDatabase database;
+    private ArrayList<ItemDomain> originalList = new ArrayList<>();
+    private ArrayList<ItemDomain> filteredList = new ArrayList<>();
+    private PopularAdapter popularAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,12 @@ public class MainActivity extends BaseActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        database = FirebaseDatabase.getInstance();
+        initPopular();
+
+        // Add search functionality
+        binding.textView4.setOnClickListener(v -> performSearch());
 
         initLocation();
         initBanner();
@@ -49,31 +61,57 @@ public class MainActivity extends BaseActivity {
         DatabaseReference myRef = database.getReference("Popular");
         binding.progressBarPopular.setVisibility(View.VISIBLE);
 
-        ArrayList<ItemDomain> list = new ArrayList<>();
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                originalList.clear();
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
-                        list.add(issue.getValue(ItemDomain.class));
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        originalList.add(item);
                     }
-
-                    if (!list.isEmpty()) {
-                        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        RecyclerView.Adapter adapter = new PopularAdapter(list);
-                        binding.recyclerViewPopular.setAdapter(adapter);
-                    }
-
+                    updateRecyclerView(originalList);
                     binding.progressBarPopular.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                binding.progressBarPopular.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void performSearch() {
+        String query = binding.editTextText.getText().toString().trim();
+        if (!query.isEmpty()) {
+            filterPopularItems(query);
+        } else {
+            // Show all items if search query is empty
+            updateRecyclerView(originalList);
+        }
+        // Notify adapter about data change
+        if (popularAdapter != null) {
+            popularAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+    private void filterPopularItems(String query) {
+        filteredList.clear();
+        for (ItemDomain item : originalList) {
+            if (item != null && item.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(item);
+            }
+        }
+        updateRecyclerView(filteredList);
+    }
+
+    private void updateRecyclerView(ArrayList<ItemDomain> list) {
+        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        popularAdapter = new PopularAdapter(list);
+        binding.recyclerViewPopular.setAdapter(popularAdapter);
     }
     private void initRecommended() {
         DatabaseReference myRef = database.getReference("Item");

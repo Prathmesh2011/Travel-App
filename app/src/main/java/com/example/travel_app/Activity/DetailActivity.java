@@ -1,5 +1,6 @@
 package com.example.travel_app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Log;
@@ -38,6 +39,12 @@ public class DetailActivity extends BaseActivity {
             Glide.with(DetailActivity.this)
                     .load(object.getPic())
                     .into(binding.pic);
+
+            binding.addToCartBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
+                intent.putExtra("object", object);
+                startActivity(intent);
+            });
         } else {
             Log.e("DetailActivity", "Object is null");
         }

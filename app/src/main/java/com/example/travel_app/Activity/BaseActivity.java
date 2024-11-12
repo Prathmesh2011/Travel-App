@@ -10,7 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BaseActivity extends AppCompatActivity {
 
-    FirebaseDatabase database; // 1 usage
+    FirebaseDatabase database; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

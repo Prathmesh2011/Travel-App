@@ -131,7 +131,7 @@ public class ItemDomain implements Serializable {
         this.score = score;
     }
 
-    // Constructor, etc.
+    // Default constructor for Firebase
     public ItemDomain() {
     }
 }
